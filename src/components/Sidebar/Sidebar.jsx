@@ -23,7 +23,7 @@ const blueLogo =
 const categories = [
   { label: 'Popular', value: 'popular' },
   { label: 'Top Rated', value: 'top_rated' },
-  { label: 'upcoming', value: 'upcoming' },
+  { label: 'Upcoming', value: 'upcoming' },
 ];
 
 const demoCategories = [
