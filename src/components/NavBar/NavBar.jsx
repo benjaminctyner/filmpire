@@ -103,12 +103,14 @@ const NavBar = () => {
               anchor='right'
               open={mobileOpen}
               className='drawerBackground'
-              classes={{ paper: { width: '240px' } }}
               ModalProps={{ keepMounted: true }}
               sx={{
                 [(theme) => theme.breakpoints.up('sm')]: {
                   width: '240px',
                   flexShrink: 0,
+                },
+                '& .MuiDrawer-paper': {
+                  width: '240px',
                 },
               }}
               onClose={() => setMobileOpen((prevMobileOpen) => !prevMobileOpen)}
@@ -117,7 +119,12 @@ const NavBar = () => {
             </Drawer>
           ) : (
             <Drawer
-              classes={{ paper: { width: '240px' } }}
+              sx={{
+                '& .MuiDrawer-paper': {
+                  width: '240px',
+                },
+                width: '240px',
+              }}
               variant='permanent'
               open
             >
