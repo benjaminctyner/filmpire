@@ -23,7 +23,6 @@ function Movie({ movie, i }) {
             alignItems: 'center',
             fontWeight: 'bolder',
             textDecoration: 'none',
-
             [(theme) => theme.breakpoints.up('xs')]: {
               display: 'flex',
               flexDirection: 'column',

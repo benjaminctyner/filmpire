@@ -9,16 +9,20 @@ import { useSelector } from 'react-redux';
 import { useGetMoviesQuery } from '../../services/TMBD';
 import MovieList from '../MovieList/MovieList';
 
-import { selectGenreOrCategory } from '../../features/currentGenreOrCategory';
+import {
+  selectGenreOrCategory,
+  searchMovie,
+} from '../../features/currentGenreOrCategory';
 
 const Movies = () => {
   const [page, setPage] = useState(1);
-  const { genreIdOrCategoryName } = useSelector(
+  const { genreIdOrCategoryName, searchQuery } = useSelector(
     (state) => state.currentGenreOrCategory
   );
   const { data, error, isFetching } = useGetMoviesQuery({
     genreIdOrCategoryName,
     page,
+    searchQuery,
   });
 
   if (isFetching) {
