@@ -3,6 +3,7 @@ import { Typography, Grid, Grow, Tooltip, Rating } from '@mui/material';
 import { Link, useParams } from 'react-router-dom';
 import { Image, GenreImage } from './styled';
 import { Box } from '@mui/system';
+import { LinkMovie } from './styled';
 
 function Movie({ movie, i }) {
   return (
@@ -13,29 +14,14 @@ function Movie({ movie, i }) {
       md={4}
       lg={3}
       xl={2}
-      className='movie'
-      sx={{ padding: '10px' }}
+      sx={{
+        padding: '10px',
+      }}
     >
       <Grow in key={i} timeout={(i + 1) * 150}>
-        <Link
-          className='links'
-          to={`/movie/${movie.id}`}
-          sx={{
-            alignItems: 'center',
-            fontWeight: 'bolder',
-            textDecoration: 'none',
-            [(theme) => theme.breakpoints.up('xs')]: {
-              display: 'flex',
-              flexDirection: 'column',
-            },
-            '&:hover': {
-              cursor: 'pointer',
-            },
-          }}
-        >
+        <LinkMovie className='links' to={`/movie/${movie.id}`}>
           <Image
             alt={movie.title}
-            className='image'
             src={
               movie.poster_path
                 ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
@@ -59,11 +45,11 @@ function Movie({ movie, i }) {
             {movie.title}
           </Typography>
           <Tooltip disableTouchListener title={`${movie.vote_average / 2} / 5`}>
-            <Box textAlign='center'>
+            <Box textAlign='center' alignContent='center'>
               <Rating readOnly value={movie.vote_average / 2} precision={0.1} />
             </Box>
           </Tooltip>
-        </Link>
+        </LinkMovie>
       </Grow>
     </Grid>
   );
