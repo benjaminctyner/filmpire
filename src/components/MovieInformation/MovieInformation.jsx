@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Modal,
   Typography,
@@ -10,7 +10,14 @@ import {
   useMediaQuery,
   Rating,
 } from '@mui/material';
-import { ImagePoster, ImageGenre, ImageCast, LinkGenre } from './styled';
+import {
+  ImagePoster,
+  ImageGenre,
+  ImageCast,
+  LinkGenre,
+  Iframe,
+} from './styled';
+import { MovieList } from '..';
 import genreIcons from '../../assets/genres';
 import {
   Movie as MovieIcon,
@@ -35,6 +42,7 @@ import { selectGenreOrCategory } from '../../features/currentGenreOrCategory';
 //dispatch(selectGenreOrCategory(genre.id))
 
 const MovieInformation = () => {
+  const [open, setOpen] = useState(false);
   const { id } = useParams();
   const { data, isFetching, error } = useGetMovieQuery(id);
   const { data: recommendations, isFetching: isRecommendationsFetching } =
@@ -50,7 +58,7 @@ const MovieInformation = () => {
   const isMovieWatchlisted = true;
   const addToFavorites = () => {};
   const addToWatchlist = () => {};
-  console.log(data);
+
   if (isFetching) {
     return (
       <Box display='flex' justifyContent='center' alignItems='center'>
@@ -271,7 +279,11 @@ const MovieInformation = () => {
                 >
                   IMDB
                 </Button>
-                <Button onClick={() => {}} href='#' endIcon={<Theaters />}>
+                <Button
+                  onClick={() => setOpen(true)}
+                  href='#'
+                  endIcon={<Theaters />}
+                >
                   TRAILER
                 </Button>
               </ButtonGroup>
@@ -327,7 +339,28 @@ const MovieInformation = () => {
         <Typography variant='h3' gutterBottom align='center'>
           You might also like:
         </Typography>
+        {recommendations ? (
+          <MovieList movies={recommendations} numberOfMovies={12} />
+        ) : (
+          <Box>Sorry, nothing was found!</Box>
+        )}
       </Box>
+      <Modal
+        closeAfterTransition
+        open={open}
+        onClose={() => setOpen(false)}
+        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      >
+        {data?.videos?.results?.length > 0 && (
+          <Iframe
+            autoPlay
+            frameBorder='0'
+            title='Trailer'
+            src={`https://www.youtube.com/embed/${data.videos.results[0].key}`}
+            allow='autoplay'
+          />
+        )}
+      </Modal>
     </Grid>
   );
 };

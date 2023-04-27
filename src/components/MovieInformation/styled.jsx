@@ -16,3 +16,13 @@ export const LinkGenre = styled(Link)({
   },
   textDecoration: 'none',
 });
+
+export const Iframe = styled('iframe')({
+  width: '50%',
+  height: '50%',
+  alignItems: 'center',
+  [(theme) => theme.breakpoints.down('sm')]: {
+    width: '90%',
+    height: '90%',
+  },
+});

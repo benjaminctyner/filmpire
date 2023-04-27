@@ -3,7 +3,7 @@ import { Grid } from '@mui/material';
 import styled from './styled';
 import Movie from '../Movie/Movie';
 
-function MovieList({ movies }) {
+function MovieList({ movies, numberOfMovies }) {
   return (
     <Grid
       container
@@ -18,7 +18,7 @@ function MovieList({ movies }) {
         },
       }}
     >
-      {movies.results.map((movie, i) => (
+      {movies.results.slice(0, numberOfMovies).map((movie, i) => (
         <Movie key={i} movie={movie} i={i} />
       ))}
     </Grid>
