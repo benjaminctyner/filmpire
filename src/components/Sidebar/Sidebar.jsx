@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import {
   Divider,
-  Link,
   List,
   ListItem,
   ListItemText,
@@ -12,8 +11,9 @@ import {
   ListItemButton,
 } from '@mui/material';
 // import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
-import { Image, GenreImage } from './styled';
+import { Image, GenreImage, LinkGenre } from './styled';
 import { useGetGenresQuery } from '../../services/TMBD';
 import genreIcons from '../../assets/genres';
 import { useDispatch, useSelector } from 'react-redux';
@@ -39,6 +39,10 @@ function Sidebar({ setMobileOpen }) {
     (state) => state.currentGenreOrCategory
   );
 
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [genreIdOrCategoryName]);
+
   return (
     <>
       <Link
@@ -56,7 +60,7 @@ function Sidebar({ setMobileOpen }) {
       <List>
         <ListSubheader>Categories</ListSubheader>
         {categories.map(({ label, value }) => (
-          <Link
+          <LinkGenre
             key={value}
             className='links'
             to='/'
@@ -82,7 +86,7 @@ function Sidebar({ setMobileOpen }) {
               </ListItemIcon>
               <ListItemText primary={label} />
             </ListItemButton>
-          </Link>
+          </LinkGenre>
         ))}
       </List>
       <Divider />
@@ -94,12 +98,7 @@ function Sidebar({ setMobileOpen }) {
           </Box>
         ) : (
           data.genres.map(({ name, id }) => (
-            <Link
-              key={name}
-              className='links'
-              to='/'
-              sx={{ textDecoration: 'none' }}
-            >
+            <LinkGenre key={name} className='links' to='/'>
               <ListItemButton
                 onClick={() => dispatch(selectGenreOrCategory(id))}
               >
@@ -120,7 +119,7 @@ function Sidebar({ setMobileOpen }) {
                 </ListItemIcon>
                 <ListItemText primary={name} />
               </ListItemButton>
-            </Link>
+            </LinkGenre>
           ))
         )}
       </List>

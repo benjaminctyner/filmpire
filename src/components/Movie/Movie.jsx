@@ -1,5 +1,6 @@
 import React from 'react';
-import { Typography, Grid, Grow, Tooltip, Rating, Link } from '@mui/material';
+import { Typography, Grid, Grow, Tooltip, Rating } from '@mui/material';
+import { Link, useParams } from 'react-router-dom';
 import { Image, GenreImage } from './styled';
 import { Box } from '@mui/system';
 

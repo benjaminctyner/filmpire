@@ -9,9 +9,8 @@ import {
   CircularProgress,
   useMediaQuery,
   Rating,
-  Link,
 } from '@mui/material';
-import { ImagePoster, ImageGenre } from './styled';
+import { ImagePoster, ImageGenre, ImageCast, LinkGenre } from './styled';
 import genreIcons from '../../assets/genres';
 import {
   Movie as MovieIcon,
@@ -23,14 +22,34 @@ import {
   Remove,
   ArrowBack,
 } from '@mui/icons-material';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import { useGetMovieQuery } from '../../services/TMBD';
+import {
+  useGetMovieQuery,
+  useGetRecommendationsQuery,
+} from '../../services/TMBD';
+import { selectGenreOrCategory } from '../../features/currentGenreOrCategory';
+
+///movie/550988 freeguy
+//dispatch(selectGenreOrCategory(genre.id))
 
 const MovieInformation = () => {
   const { id } = useParams();
   const { data, isFetching, error } = useGetMovieQuery(id);
+  const { data: recommendations, isFetching: isRecommendationsFetching } =
+    useGetRecommendationsQuery({
+      list: '/recommendations',
+      movie_id: id,
+    });
+  const dispatch = useDispatch();
+  const { genreIdOrCategoryName } = useSelector(
+    (state) => state.currentGenreOrCategory
+  );
+  const isMovieFavorited = true;
+  const isMovieWatchlisted = true;
+  const addToFavorites = () => {};
+  const addToWatchlist = () => {};
   console.log(data);
   if (isFetching) {
     return (
@@ -130,11 +149,11 @@ const MovieInformation = () => {
           }}
         >
           {data?.genres.map((genre, i) => (
-            <Link
+            <LinkGenre
               key={genre.name}
               className='links'
               to='/'
-              onClick={() => {}}
+              onClick={() => dispatch(selectGenreOrCategory(genre.id))}
               sx={{
                 display: 'flex',
                 justifyContent: 'center',
@@ -142,6 +161,7 @@ const MovieInformation = () => {
                 [(theme) => theme.breakpoints.down('sm')]: {
                   padding: '0.5rem 1rem',
                 },
+                textDecoration: 'none',
               }}
             >
               <ImageGenre
@@ -159,13 +179,155 @@ const MovieInformation = () => {
                   height: '30px',
                 }}
               />
-              <Typography variant='subtitle1' color='textPrimary'>
+              <Typography variant='subtitle1' sx={{ color: 'textPrimary' }}>
                 {genre.name}
               </Typography>
-            </Link>
+            </LinkGenre>
           ))}
         </Grid>
+        <Typography variant='h5' gutterBottom sx={{ marginTop: '10px' }}>
+          Overview
+        </Typography>
+        <Typography sx={{ marginBottom: '2rem' }}>{data?.overview}</Typography>
+        <Typography variant='h5' gutterBottom>
+          Top Cast
+        </Typography>
+        <Grid item container spacing={2}>
+          {data &&
+            data?.credits?.cast
+              ?.map(
+                (character, i) =>
+                  character.profile_path && (
+                    <Grid
+                      key={i}
+                      item
+                      xs={4}
+                      md={2}
+                      component={Link}
+                      to={`/actors/${character.id}`}
+                      sx={{ textDecoration: 'none' }}
+                    >
+                      <ImageCast
+                        className='castImage'
+                        src={`https://image.tmdb.org/t/p/w500/${character.profile_path}`}
+                        alt={character.name}
+                        sx={{
+                          width: '100%',
+                          maxWidth: '7em',
+                          height: '8em',
+                          objectFit: 'cover',
+                          borderRadius: '10px',
+                        }}
+                      />
+                      <Typography color='textPrimary'>
+                        {character?.name}
+                      </Typography>
+                      <Typography color='textSecondary'>
+                        {character?.character.split('/')[0]}
+                      </Typography>
+                    </Grid>
+                  )
+              )
+              .slice(0, 6)}
+        </Grid>
+        <Grid item container sx={{ marginTop: '2rem' }}>
+          <Box
+            className='buttonsContainer'
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              width: '100%',
+              [(theme) => theme.breakpoints.down('sm')]: {
+                flexDirection: 'column',
+              },
+            }}
+          >
+            <Grid
+              className='buttonsContainer'
+              item
+              xs={12}
+              sm={6}
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                width: '100%',
+                [(theme) => theme.breakpoints.down('sm')]: {
+                  flexDirection: 'column',
+                },
+              }}
+            >
+              <ButtonGroup size='medium' variant='outlined'>
+                <Button
+                  target='_blank'
+                  href={data?.homepage}
+                  endIcon={<Language />}
+                >
+                  Website
+                </Button>
+                <Button
+                  target='_blank'
+                  href={`https://www.imdb.com/title/${data?.imdb_id}`}
+                  endIcon={<MovieIcon />}
+                >
+                  IMDB
+                </Button>
+                <Button onClick={() => {}} href='#' endIcon={<Theaters />}>
+                  TRAILER
+                </Button>
+              </ButtonGroup>
+            </Grid>
+            <Grid
+              className='buttonsContainer'
+              item
+              xs={12}
+              sm={6}
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                width: '100%',
+                [(theme) => theme.breakpoints.down('sm')]: {
+                  flexDirection: 'column',
+                },
+              }}
+            >
+              <ButtonGroup size='medium' variant='outlined'>
+                <Button
+                  onClick={addToFavorites}
+                  endIcon={
+                    isMovieFavorited ? <FavoriteBorderOutlined /> : <Favorite />
+                  }
+                >
+                  {isMovieFavorited ? 'Unfavorite' : 'Favorite'}
+                </Button>
+                <Button
+                  onClick={addToWatchlist}
+                  endIcon={isMovieWatchlisted ? <Remove /> : <PlusOne />}
+                >
+                  {isMovieWatchlisted ? 'Unwatchlist' : 'Watchlist'}
+                </Button>
+                <Button
+                  endIcon={<ArrowBack />}
+                  sx={{ borderColor: 'primary.main' }}
+                >
+                  <Typography
+                    component={Link}
+                    to='/'
+                    variant='subtitle2'
+                    sx={{ textDecoration: 'none' }}
+                  >
+                    BACK
+                  </Typography>
+                </Button>
+              </ButtonGroup>
+            </Grid>
+          </Box>
+        </Grid>
       </Grid>
+      <Box marginTop='5rem' width='100%'>
+        <Typography variant='h3' gutterBottom align='center'>
+          You might also like:
+        </Typography>
+      </Box>
     </Grid>
   );
 };
