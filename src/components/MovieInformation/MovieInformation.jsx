@@ -88,7 +88,12 @@ const MovieInformation = () => {
         },
       }}
     >
-      <Grid item sm={12} lg={4}>
+      <Grid
+        item
+        sm={12}
+        lg={4}
+        sx={{ display: 'flex', marginBottom: '30px', justifyContent: 'center' }}
+      >
         <ImagePoster
           className='poster'
           src={`https://image.tmdb.org/t/p/w500/${data?.poster_path}`}
@@ -106,7 +111,6 @@ const MovieInformation = () => {
             [(theme) => theme.breakpoints.down('md')]: {
               margin: '0 auto',
               width: '50%',
-              height: '350px',
             },
           }}
         />
